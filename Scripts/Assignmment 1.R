@@ -51,9 +51,9 @@ corr<-function(x,y=0)
 {
   setwd("~/Documents/R Project/For Course/R-courstest/Data")
   mpath<-list.files(x,full.names=TRUE)
-  mdata<-data.frame()
+  mdata<-NULL
   result<-data.frame()
-  for(i in y)
+  for(i in 1:332)
   {
     mdata<-read.csv(mpath[i])
     c<-complete.cases(mdata)
@@ -73,6 +73,7 @@ corr<-function(x,y=0)
     subdata2<-mdata$nitrate
     result<-rbind(result,cor(subdata1,subdata2,use = "complete.obs"))
   }
+  result
 }
 
 
