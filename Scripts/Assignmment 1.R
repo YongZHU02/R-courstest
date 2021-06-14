@@ -50,7 +50,11 @@ complete<-function(x,y)
 corr<-function(x,y=0)
 {
   setwd("~/Documents/R Project/For Course/R-courstest/Data")
+<<<<<<< HEAD
   mpath<-list.files(x, full.names=TRUE)
+=======
+  mpath<-list.files(x,full.names=TRUE)
+>>>>>>> 83649c2ae6698737b0112255024dba6e2110c36a
   mdata<-NULL
   result<-data.frame()
   for(i in 1:332)

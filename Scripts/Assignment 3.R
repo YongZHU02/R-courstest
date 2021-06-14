@@ -38,3 +38,75 @@ best<- function(st, ou)
   result<-min(result)
   result
 }
+
+# 3 Ranking hospitals by outcome in a state
+rankhospital<-function(st,ou,nu="best")
+{ #get the data and judge the input
+  setwd("~/Documents/R Project/For Course/R-courstest/Data/AS3")
+  outcome <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
+  op1<-switch(ou,"heart attack"=1,"heart failure"=2,"pneumonia"=3,0)
+  if(!op1)
+  {
+    stop(print("Invalid outcome !"))
+  }
+  op11<-switch(op1,"Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack",
+               "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure",
+               "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia",0)
+  mid1<-outcome$State
+  Mid1<-unique(mid1)
+  op2<-any(st==Mid1)
+  if(!op2)
+  {
+    stop(print("Invalid state !"))
+  }
+  #get specific data
+  data1<-outcome[which(outcome$State==st),]
+  data1<-data1[which(data1[,op11]!="Not Available"),]
+  #ordering
+  data2<-as.numeric(data1[,op11])
+  data1<-data1[order(data2,data1[,"Hospital.Name"]),]
+  #get the result
+  nuf<-switch(nu,"best"=1,"worst"=nrow(data1))
+  if(isTRUE(class(nuf)=="NULL")){nuf<-nu}
+  result<-data1[nuf,"Hospital.Name"]
+  result
+}
+
+# 4 Ranking hospitals in all states
+rankall <- function(ou,nu="best") 
+{
+  #get the data and judge the input
+  setwd("~/Documents/R Project/For Course/R-courstest/Data/AS3")
+  outcome <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
+  op1<-switch(ou,"heart attack"=1,"heart failure"=2,"pneumonia"=3,0)
+  if(!op1)
+  {
+    stop(print("Invalid outcome !"))
+  }
+  op11<-switch(op1,"Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack",
+               "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure",
+               "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia",0)
+  
+  #get needed data
+  data1<-outcome[which(outcome[,op11]!="Not Available"),]
+  data2<-as.numeric(data1[,op11])
+  data1<-data1[order(data1[,"State"],data2,data1[,"Hospital.Name"]),]
+  st<-unique(data1[,"State"])
+  result<-data.frame()
+  #make the data frame
+  for(i in 1:length(st))
+  {
+    datai<-data1[which(data1[,"State"]==st[i]),]
+    nuf<-switch(nu,"best"=1,"worst"=nrow(datai))
+    if(isTRUE(class(nuf)=="NULL")){nuf<-nu}
+    result<-rbind(result,c(datai[nuf,"Hospital.Name"],st[i]))
+  }
+  colnames(result)<-c("Hospital.Name","State")
+  row.names(result)<-st
+  result 
+}
+
+
+
+
+
